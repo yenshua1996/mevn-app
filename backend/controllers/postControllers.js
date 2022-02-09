@@ -1,30 +1,60 @@
-const asyncHandler = require("express-handler");
+const asyncHandler = require("express-async-handler");
+const Post = require("../models/postModel.js");
 
 //GET Handler
-const getController = (req, res) => {
-  res.status(200).json({ results: [] });
-};
+//Access Public
+const getController = asyncHandler(async (req, res) => {
+  //Find all post
+  const posts = await Post.find();
+
+  //Response
+  res.status(200).json(posts);
+});
 
 //POST Handler
-const createController = (req, res) => {
+//Access Private
+const createController = asyncHandler(async (req, res) => {
+  //Check post
   if (!req.body.post) {
     res.status(400);
     throw new Error("Please enter post payload!");
   }
 
-  res.status(200).json({ payload: req.body.post });
-};
+  //Create post
+  const post = await Post.create({
+    post: req.body.post,
+  });
+
+  //Response
+  res.status(200).json(post);
+});
 
 //PUT Handler
+//Access Private
 const updateController = (req, res) => {
   res.json({ message: `Update Routes id: ${req.params.id}` });
 };
 
 //DELETE Handler
-const deleteController = (req, res) => {
-  res.json({ message: `Delete Routes id: ${req.params.id}` });
-};
+//Access Private
+const deleteController = asyncHandler(async (req, res) => {
+  //Find post
+  const post = await Post.findById(req.params.id);
 
+  //Check post
+  if (!post) {
+    res.status(400);
+    throw new Error("Goal not found!");
+  }
+
+  //Remove post
+  await post.remove();
+
+  //Response
+  res.json({ id: req.params.id });
+});
+
+//Exports
 module.exports = {
   getController,
   createController,
