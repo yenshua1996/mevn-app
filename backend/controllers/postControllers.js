@@ -31,9 +31,29 @@ const createController = asyncHandler(async (req, res) => {
 
 //PUT Handler
 //Access Private
-const updateController = (req, res) => {
-  res.json({ message: `Update Routes id: ${req.params.id}` });
-};
+const updateController = asyncHandler(async (req, res) => {
+  //Find post
+  const post = await Post.findById(req.params.id);
+
+  // Check post
+  if (!post) {
+    res.status(400);
+
+    throw new Error("Post not found!");
+  }
+
+  //Update post
+  const updatePost = await Post.findByIdAndUpdate(
+    req.params.id,
+    { post: req.body.post },
+    {
+      new: true,
+    }
+  );
+
+  //Response
+  res.status(200).json(updatePost);
+});
 
 //DELETE Handler
 //Access Private
