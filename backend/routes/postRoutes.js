@@ -1,5 +1,5 @@
 const express = require("express");
-
+const protect = require("../middlewares/authMiddleware");
 const {
   getController,
   createController,
@@ -9,12 +9,12 @@ const {
 
 const router = express.Router();
 
-router.get("/", getController);
+router.get("/", protect, getController);
 
-router.post("/", createController);
+router.post("/", protect, createController);
 
-router.put("/:id", updateController);
+router.put("/:id", protect, updateController);
 
-router.delete("/:id", deleteController);
+router.delete("/:id", protect, deleteController);
 
 module.exports = router;

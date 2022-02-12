@@ -11,6 +11,7 @@ app.use(express.json());
 
 //Application Routers
 app.use("/api/posts", require("./routes/postRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
 
 //Application Custom Middleware
 app.use(errorHandler);
